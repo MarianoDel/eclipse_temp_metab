@@ -148,6 +148,7 @@ int main(void)
 	unsigned char stop_state = 0;
 	unsigned char led_state = 0;
 	unsigned char blink = 0;
+	unsigned char relay_was_on = 0;
 	//!< At this stage the microcontroller clock setting is already configured,
     //   this is done through SystemInit() function which is called from startup
     //   file (startup_stm32f0xx.s) before to branch to application main.
@@ -311,9 +312,31 @@ int main(void)
 		}
 
 		if (Door_Open())
+		{
+#ifdef RELAY_AND_LIGHT_WITH_SYNC
+			if (RELAY)	//si esta conectado el RELAY
+			{
+				relay_was_on = 1;
+				RELAY_OFF;
+				Wait_ms(2);
+			}
+			else
+				relay_was_on = 0;
+#endif
 			LIGHT_ON;
+		}
 		else
+		{
 			LIGHT_OFF;
+#ifdef RELAY_AND_LIGHT_WITH_SYNC
+			if (relay_was_on)
+			{
+				Wait_ms(2);
+				RELAY_ON;
+				relay_was_on = 0;
+			}
+#endif
+		}
 
 		switch (stop_state)
 		{

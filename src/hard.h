@@ -10,6 +10,13 @@
 
 #include "stm32f0xx_adc.h"
 
+//--- Board Configuration ---------------------------------------//
+#define RELAY_AND_LIGHT_WITH_SYNC
+
+
+//--- End Board Configuration -----------------------------------//
+
+
 //para GPIO 1 solo bit uso Port bit set/reset register (GPIOx_BSRR) (x=A..G)
 //GPIOA pin4
 #define LED ((GPIOA->ODR & 0x0010) != 0)
