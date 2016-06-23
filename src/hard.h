@@ -11,35 +11,33 @@
 #include "stm32f0xx_adc.h"
 
 //--- Board Configuration ---------------------------------------//
-//#define RELAY_AND_LIGHT_WITH_SYNC
+
 
 
 //--- End Board Configuration -----------------------------------//
 
 
 //para GPIO 1 solo bit uso Port bit set/reset register (GPIOx_BSRR) (x=A..G)
-//GPIOA pin4
-#define LED ((GPIOA->ODR & 0x0010) != 0)
-//#define LED ((GPIOA->ODR & 0x0010) == 0)
-#define LED_ON	GPIOA->BSRR = 0x00000010
-#define LED_OFF GPIOA->BSRR = 0x00100000
+//GPIOA pin1
+//#define DOOR ((GPIOA->IDR & 0x0002) == 0)
+#define DOOR ((GPIOA->IDR & 0x0002) != 0)
 
 //GPIOA pin2
 #define LIGHT ((GPIOA->ODR & 0x0004) != 0)
-//#define LIGHT ((GPIOA->ODR & 0x0004) == 0)
-//#define LIGHT_ON GPIOA->BSRR = 0x00000004
-//#define LIGHT_OFF GPIOA->BSRR = 0x00040000
-#define LIGHT_OFF GPIOA->BSRR = 0x00000004
-#define LIGHT_ON GPIOA->BSRR = 0x00040000
+#define LIGHT_ON GPIOA->BSRR = 0x00000004
+#define LIGHT_OFF GPIOA->BSRR = 0x00040000
 
 //GPIOA pin3
 #define RELAY ((GPIOA->ODR & 0x0008) == 0)
 #define RELAY_ON GPIOA->BSRR = 0x00000008
 #define RELAY_OFF GPIOA->BSRR = 0x00080000
 
-//GPIOA pin1
-#define DOOR ((GPIOA->IDR & 0x0002) == 0)
-//#define DOOR ((GPIOA->IDR & 0x0002) == 1)
+//GPIOA pin4
+#define LED ((GPIOA->ODR & 0x0010) != 0)
+#define LED_ON	GPIOA->BSRR = 0x00000010
+#define LED_OFF GPIOA->BSRR = 0x00100000
+
+
 
 #define CH_IN_POTE ADC_Channel_5
 #define CH_IN_TEMP ADC_Channel_0

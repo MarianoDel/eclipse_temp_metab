@@ -314,251 +314,241 @@ int main(void)
 
 		if (Door_Open())
 		{
-#ifdef RELAY_AND_LIGHT_WITH_SYNC
-			if (RELAY)	//si esta conectado el RELAY
-			{
-				relay_was_on = 1;
-				RELAY_OFF;
-				Wait_ms(2);
-			}
-			else
-				relay_was_on = 0;
-#endif
-			LIGHT_ON;
+			RELAY_OFF;
 			LED_OFF;
 			door_is_open = 1;
+			LIGHT_ON;
 		}
 		else
 		{
 			LIGHT_OFF;
 			door_is_open = 0;
-#ifdef RELAY_AND_LIGHT_WITH_SYNC
-			if (relay_was_on)
-			{
-				Wait_ms(2);
-				RELAY_ON;
-				relay_was_on = 0;
-			}
-#endif
 		}
 
-		switch (stop_state)
+
+		if (!door_is_open)
 		{
-			case NORMAL:
-				if (move_relay == 0)		//el RELE lo muevo cada 10 segundos
-				{
-					move_relay = 10;
-
-#ifdef SIMPLE_VECTOR_TEMP
-					//Modificacion 10-3-15 pongo histeresis de 1 paso completo
-					if (Temp_Range >= Pote_Range)
-						RELAY_OFF;
-
-					if (Pote_Range > NEVER_DEGREES)
+			switch (stop_state)
+			{
+				case NORMAL:
+					if (move_relay == 0)		//el RELE lo muevo cada 10 segundos
 					{
-						if (Temp_Range < (Pote_Range - 1))
-							RELAY_ON;
-					}
-#endif
+						move_relay = 10;
 
-#ifdef DOBLE_VECTOR_TEMP
-					//Modificacion 14-5-15 tego dos vectores, cuando esta encendido y cuando no
-					if (Temp_Range >= Pote_Range)
-						RELAY_OFF;
+	#ifdef SIMPLE_VECTOR_TEMP
+						//Modificacion 10-3-15 pongo histeresis de 1 paso completo
+						if (Temp_Range >= Pote_Range)
+							RELAY_OFF;
 
-					if (Pote_Range > NEVER_DEGREES)
-					{
-						if (Temp_Range < (Pote_Range - 1))
-							RELAY_ON;
-					}
-#endif
-
-#ifdef SETPOINT_PLUS_HYST
-					//Modificacion 23-5-15 pongo setpoint + hysteresis
-					switch (Pote_Range)
-					{
-						case CONT_DEGREES:		//lo resuelvo en otra parte
-							break;
-
-						case ZERO_DEGREES:
-							if (temp_filtered > (vtemp_ranges[ZERO_DEGREES] + HYST))
-								RELAY_OFF;
-							else if (temp_filtered < (vtemp_ranges[ZERO_DEGREES] - HYST))
+						if (Pote_Range > NEVER_DEGREES)
+						{
+							if (Temp_Range < (Pote_Range - 1))
 								RELAY_ON;
+						}
+	#endif
 
-							break;
+	#ifdef DOBLE_VECTOR_TEMP
+						//Modificacion 14-5-15 tego dos vectores, cuando esta encendido y cuando no
+						if (Temp_Range >= Pote_Range)
+							RELAY_OFF;
 
-						case THREE_DEGREES:
-							if (temp_filtered > (vtemp_ranges[THREE_DEGREES] + HYST))
-								RELAY_OFF;
-							else if (temp_filtered < (vtemp_ranges[THREE_DEGREES] - HYST))
+						if (Pote_Range > NEVER_DEGREES)
+						{
+							if (Temp_Range < (Pote_Range - 1))
 								RELAY_ON;
+						}
+	#endif
 
-							break;
+	#ifdef SETPOINT_PLUS_HYST
+						//Modificacion 23-5-15 pongo setpoint + hysteresis
+						switch (Pote_Range)
+						{
+							case CONT_DEGREES:		//lo resuelvo en otra parte
+								break;
 
-						case SIX_DEGREES:
-							if (temp_filtered > (vtemp_ranges[SIX_DEGREES] + HYST))
-								RELAY_OFF;
-							else if (temp_filtered < (vtemp_ranges[SIX_DEGREES] - HYST))
-								RELAY_ON;
+							case ZERO_DEGREES:
+								if (temp_filtered > (vtemp_ranges[ZERO_DEGREES] + HYST))
+									RELAY_OFF;
+								else if (temp_filtered < (vtemp_ranges[ZERO_DEGREES] - HYST))
+									RELAY_ON;
 
-							break;
+								break;
 
-						case NINE_DEGREES:
-							if (temp_filtered > (vtemp_ranges[NINE_DEGREES] + HYST))
-								RELAY_OFF;
-							else if (temp_filtered < (vtemp_ranges[NINE_DEGREES] - HYST))
-								RELAY_ON;
+							case THREE_DEGREES:
+								if (temp_filtered > (vtemp_ranges[THREE_DEGREES] + HYST))
+									RELAY_OFF;
+								else if (temp_filtered < (vtemp_ranges[THREE_DEGREES] - HYST))
+									RELAY_ON;
 
-							break;
+								break;
 
-						case TWELVE_DEGREES:
-							if (temp_filtered > (vtemp_ranges[TWELVE_DEGREES] + HYST))
-								RELAY_OFF;
-							else if (temp_filtered < (vtemp_ranges[TWELVE_DEGREES] - HYST))
-								RELAY_ON;
+							case SIX_DEGREES:
+								if (temp_filtered > (vtemp_ranges[SIX_DEGREES] + HYST))
+									RELAY_OFF;
+								else if (temp_filtered < (vtemp_ranges[SIX_DEGREES] - HYST))
+									RELAY_ON;
 
-							break;
+								break;
 
-						case NEVER_DEGREES:		//lo resuelvo en otra parte
-							break;
-					}
-#endif
-#ifdef OPEN_LOOP
-					//Modificacion 23-5-15 pongo setpoint + hysteresis
-					switch (Pote_Range)
-					{
-						case CONT_DEGREES:		//lo resuelvo en otra parte
-							break;
+							case NINE_DEGREES:
+								if (temp_filtered > (vtemp_ranges[NINE_DEGREES] + HYST))
+									RELAY_OFF;
+								else if (temp_filtered < (vtemp_ranges[NINE_DEGREES] - HYST))
+									RELAY_ON;
 
-						case ZERO_DEGREES:
-							if (pwm_current_min < vpwm_ranges[ZERO_DEGREES])
-								RELAY_ON;
-							else
-								RELAY_OFF;
+								break;
 
-							if (pwm_current_min >= PWM_MIN_MAX)
-							{
-								pwm_current_min = 0;
-							}
-							break;
+							case TWELVE_DEGREES:
+								if (temp_filtered > (vtemp_ranges[TWELVE_DEGREES] + HYST))
+									RELAY_OFF;
+								else if (temp_filtered < (vtemp_ranges[TWELVE_DEGREES] - HYST))
+									RELAY_ON;
 
-						case THREE_DEGREES:
-							if (pwm_current_min < vpwm_ranges[THREE_DEGREES])
-								RELAY_ON;
-							else
-								RELAY_OFF;
+								break;
 
-							if (pwm_current_min >= PWM_MIN_MAX)
-							{
-								pwm_current_min = 0;
-							}
-							break;
+							case NEVER_DEGREES:		//lo resuelvo en otra parte
+								break;
+						}
+	#endif
+	#ifdef OPEN_LOOP
+						//Modificacion 23-5-15 pongo setpoint + hysteresis
+						switch (Pote_Range)
+						{
+							case CONT_DEGREES:		//lo resuelvo en otra parte
+								break;
 
-						case SIX_DEGREES:
-							if (pwm_current_min < vpwm_ranges[SIX_DEGREES])
-								RELAY_ON;
-							else
-								RELAY_OFF;
+							case ZERO_DEGREES:
+								if (pwm_current_min < vpwm_ranges[ZERO_DEGREES])
+									RELAY_ON;
+								else
+									RELAY_OFF;
 
-							if (pwm_current_min >= PWM_MIN_MAX)
-							{
-								pwm_current_min = 0;
-							}
-							break;
+								if (pwm_current_min >= PWM_MIN_MAX)
+								{
+									pwm_current_min = 0;
+								}
+								break;
 
-						case NINE_DEGREES:
-							if (pwm_current_min < vpwm_ranges[NINE_DEGREES])
-								RELAY_ON;
-							else
-								RELAY_OFF;
+							case THREE_DEGREES:
+								if (pwm_current_min < vpwm_ranges[THREE_DEGREES])
+									RELAY_ON;
+								else
+									RELAY_OFF;
 
-							if (pwm_current_min >= PWM_MIN_MAX)
-							{
-								pwm_current_min = 0;
-							}
-							break;
+								if (pwm_current_min >= PWM_MIN_MAX)
+								{
+									pwm_current_min = 0;
+								}
+								break;
 
-						case TWELVE_DEGREES:
-							if (pwm_current_min < vpwm_ranges[TWELVE_DEGREES])
-								RELAY_ON;
-							else
-								RELAY_OFF;
+							case SIX_DEGREES:
+								if (pwm_current_min < vpwm_ranges[SIX_DEGREES])
+									RELAY_ON;
+								else
+									RELAY_OFF;
 
-							if (pwm_current_min >= PWM_MIN_MAX)
-							{
-								pwm_current_min = 0;
-							}
-							break;
+								if (pwm_current_min >= PWM_MIN_MAX)
+								{
+									pwm_current_min = 0;
+								}
+								break;
 
-						case NEVER_DEGREES:		//lo resuelvo en otra parte
-							break;
-					}
-#endif //OPEN_LOOP
-				}	//end move_relay
+							case NINE_DEGREES:
+								if (pwm_current_min < vpwm_ranges[NINE_DEGREES])
+									RELAY_ON;
+								else
+									RELAY_OFF;
 
-				if (minutes >= 1415)
-					stop_state = GO_TO_STOP;
+								if (pwm_current_min >= PWM_MIN_MAX)
+								{
+									pwm_current_min = 0;
+								}
+								break;
 
-				//si se apago la heladera
-				if (Pote_Range == NEVER_DEGREES)
-					stop_state = TO_NEVER;
+							case TWELVE_DEGREES:
+								if (pwm_current_min < vpwm_ranges[TWELVE_DEGREES])
+									RELAY_ON;
+								else
+									RELAY_OFF;
 
-				//si se prende siempre
-				if (Pote_Range == CONT_DEGREES)
-					stop_state = TO_ALWAYS;
+								if (pwm_current_min >= PWM_MIN_MAX)
+								{
+									pwm_current_min = 0;
+								}
+								break;
 
-				break;
+							case NEVER_DEGREES:		//lo resuelvo en otra parte
+								break;
+						}
+	#endif //OPEN_LOOP
+					}	//end move_relay
 
-			case GO_TO_STOP:
-				//tengo que apagar el rele durante 25 minutos
-				minutes = 0;
-				RELAY_OFF;
-				stop_state = STOPPED;
-				break;
+					if (minutes >= 1415)
+						stop_state = GO_TO_STOP;
 
-			case STOPPED:
-				if (minutes >= 25)
-				{
-					stop_state = NORMAL;
+					//si se apago la heladera
+					if (Pote_Range == NEVER_DEGREES)
+						stop_state = TO_NEVER;
+
+					//si se prende siempre
+					if (Pote_Range == CONT_DEGREES)
+						stop_state = TO_ALWAYS;
+
+					break;
+
+				case GO_TO_STOP:
+					//tengo que apagar el rele durante 25 minutos
 					minutes = 0;
-				}
-				break;
+					RELAY_OFF;
+					stop_state = STOPPED;
+					break;
 
-			case TO_NEVER:
-				//apago el motor
-				RELAY_OFF;
-				stop_state = NEVER;
-				break;
+				case STOPPED:
+					if (minutes >= 25)
+					{
+						stop_state = NORMAL;
+						minutes = 0;
+					}
+					break;
 
-			case NEVER:
-				//mantengo motor apagado mientras este en NEVER
-				if (Pote_Range != NEVER_DEGREES)
-				{
-					minutes = 0;
+				case TO_NEVER:
+					//apago el motor
+					RELAY_OFF;
+					stop_state = NEVER;
+					break;
+
+				case NEVER:
+					//mantengo motor apagado mientras este en NEVER
+					if (Pote_Range != NEVER_DEGREES)
+					{
+						minutes = 0;
+						stop_state = NORMAL;
+					}
+					break;
+
+				case TO_ALWAYS:
+					RELAY_ON;
+					stop_state = ALWAYS;
+					break;
+
+				case ALWAYS:
+					if (Pote_Range != CONT_DEGREES)
+					{
+						stop_state = NORMAL;
+					}
+
+					if (!RELAY)		//agregado pos si abren la puerta
+						RELAY_ON;
+
+					if (minutes >= 1415)
+						stop_state = GO_TO_STOP;
+
+					break;
+
+				default:
 					stop_state = NORMAL;
-				}
-				break;
-
-			case TO_ALWAYS:
-				RELAY_ON;
-				stop_state = ALWAYS;
-				break;
-
-			case ALWAYS:
-				if (Pote_Range != CONT_DEGREES)
-				{
-					stop_state = NORMAL;
-				}
-
-				if (minutes >= 1415)
-					stop_state = GO_TO_STOP;
-
-				break;
-
-			default:
-				stop_state = NORMAL;
-				break;
+					break;
+			}
 		}
 
 		if (!door_is_open)
