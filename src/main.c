@@ -148,7 +148,8 @@ int main(void)
 	unsigned char stop_state = 0;
 	unsigned char led_state = 0;
 	unsigned char blink = 0;
-	unsigned char relay_was_on = 0;
+//	unsigned char relay_was_on = 0;
+	unsigned char door_is_open = 0;
 	//!< At this stage the microcontroller clock setting is already configured,
     //   this is done through SystemInit() function which is called from startup
     //   file (startup_stm32f0xx.s) before to branch to application main.
@@ -324,10 +325,13 @@ int main(void)
 				relay_was_on = 0;
 #endif
 			LIGHT_ON;
+			LED_OFF;
+			door_is_open = 1;
 		}
 		else
 		{
 			LIGHT_OFF;
+			door_is_open = 0;
 #ifdef RELAY_AND_LIGHT_WITH_SYNC
 			if (relay_was_on)
 			{
@@ -557,58 +561,61 @@ int main(void)
 				break;
 		}
 
-		switch (led_state)
+		if (!door_is_open)
 		{
-			case START_BLINKING:
-				blink = (unsigned char) Pote_Range;
+			switch (led_state)
+			{
+				case START_BLINKING:
+					blink = (unsigned char) Pote_Range;
 
-				if (blink)
-				{
-					LED_ON;
-					led_timer = 200;
-					led_state++;
-					blink--;
-				}
-				break;
-
-			case WAIT_TO_OFF:
-				if (!led_timer)
-				{
-					LED_OFF;
-					led_timer = 200;
-					led_state++;
-				}
-				break;
-
-			case WAIT_TO_ON:
-				if (!led_timer)
-				{
 					if (blink)
 					{
-						blink--;
-						led_timer = 200;
-						led_state = WAIT_TO_OFF;
 						LED_ON;
+						led_timer = 200;
+						led_state++;
+						blink--;
 					}
-					else
+					break;
+
+				case WAIT_TO_OFF:
+					if (!led_timer)
 					{
-						led_state = WAIT_NEW_CYCLE;
-						led_timer = 2000;
+						LED_OFF;
+						led_timer = 200;
+						led_state++;
 					}
-				}
-				break;
+					break;
 
-			case WAIT_NEW_CYCLE:
-				if (!led_timer)
-				{
+				case WAIT_TO_ON:
+					if (!led_timer)
+					{
+						if (blink)
+						{
+							blink--;
+							led_timer = 200;
+							led_state = WAIT_TO_OFF;
+							LED_ON;
+						}
+						else
+						{
+							led_state = WAIT_NEW_CYCLE;
+							led_timer = 2000;
+						}
+					}
+					break;
+
+				case WAIT_NEW_CYCLE:
+					if (!led_timer)
+					{
+						led_state = START_BLINKING;
+					}
+					break;
+
+
+				default:
 					led_state = START_BLINKING;
-				}
-				break;
-
-
-			default:
-				led_state = START_BLINKING;
-				break;
+					break;
+			}
 		}
 	}
 	return 0;

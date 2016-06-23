@@ -11,7 +11,7 @@
 #include "stm32f0xx_adc.h"
 
 //--- Board Configuration ---------------------------------------//
-#define RELAY_AND_LIGHT_WITH_SYNC
+//#define RELAY_AND_LIGHT_WITH_SYNC
 
 
 //--- End Board Configuration -----------------------------------//
