@@ -519,6 +519,9 @@ int main(void)
 
 				case NEVER:
 					//mantengo motor apagado mientras este en NEVER
+//					if (RELAY)
+//						RELAY_OFF;
+
 					if (Pote_Range != NEVER_DEGREES)
 					{
 						minutes = 0;

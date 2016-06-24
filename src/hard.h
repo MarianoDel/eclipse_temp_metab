@@ -28,7 +28,7 @@
 #define LIGHT_OFF GPIOA->BSRR = 0x00040000
 
 //GPIOA pin3
-#define RELAY ((GPIOA->ODR & 0x0008) == 0)
+#define RELAY ((GPIOA->ODR & 0x0008) != 0)
 #define RELAY_ON GPIOA->BSRR = 0x00000008
 #define RELAY_OFF GPIOA->BSRR = 0x00080000
 
