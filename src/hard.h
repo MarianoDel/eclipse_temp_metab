@@ -39,6 +39,8 @@
 #define LED_ON	GPIOA->BSRR = 0x00000010
 #define LED_OFF GPIOA->BSRR = 0x00100000
 
+//GPIOA pin5
+#define EDGE_PIN ((GPIOA->IDR & 0x0010) != 0)
 
 
 #define CH_IN_POTE ADC_Channel_5
@@ -62,6 +64,27 @@
 #define WAIT_TO_OFF	1
 #define WAIT_TO_ON	2
 #define WAIT_NEW_CYCLE	3
+
+//--- Temas con el sync de relay
+#define TT_DELAYED_OFF		0
+#define TT_DELAYED_ON		0
+#define TT_RELAY			40		//timeout de espera antes de pegar o despegar el relay
+
+enum Relay_State {
+
+	ST_OFF = 0,
+	ST_WAIT_ON,
+	ST_DELAYED_ON,
+	ST_ON,
+	ST_WAIT_OFF,
+	ST_DELAYED_OFF
+
+};
+
+/* Module Functions ------------------------------------------------------------*/
+void RelayOn (void);
+void RelayOff (void);
+void UpdateRelay (void);
 
 
 #endif /* HARD_H_ */

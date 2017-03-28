@@ -37,7 +37,7 @@ volatile unsigned short timer_standby = 0;
 volatile unsigned short timer_led_comm = 0;
 volatile unsigned char buffrx_ready = 0;
 volatile unsigned char *pbuffrx;
-
+volatile unsigned short timer_relay = 0;
 
 
 //--- VARIABLES GLOBALES ---//
@@ -317,7 +317,7 @@ int main(void)
 #ifdef RELAY_OFF_WITH_DOOR_OPEN
 		if (Door_Open())
 		{
-			RELAY_OFF;
+			RelayOff();
 			LED_OFF;
 			door_is_open = 1;
 			LIGHT_ON;
@@ -424,9 +424,9 @@ int main(void)
 
 							case ZERO_DEGREES:
 								if (pwm_current_min < vpwm_ranges[ZERO_DEGREES])
-									RELAY_ON;
+									RelayOn();
 								else
-									RELAY_OFF;
+									RelayOff();
 
 								if (pwm_current_min >= PWM_MIN_MAX)
 								{
@@ -436,9 +436,9 @@ int main(void)
 
 							case THREE_DEGREES:
 								if (pwm_current_min < vpwm_ranges[THREE_DEGREES])
-									RELAY_ON;
+									RelayOn();
 								else
-									RELAY_OFF;
+									RelayOff();
 
 								if (pwm_current_min >= PWM_MIN_MAX)
 								{
@@ -448,9 +448,9 @@ int main(void)
 
 							case SIX_DEGREES:
 								if (pwm_current_min < vpwm_ranges[SIX_DEGREES])
-									RELAY_ON;
+									RelayOn();
 								else
-									RELAY_OFF;
+									RelayOff();
 
 								if (pwm_current_min >= PWM_MIN_MAX)
 								{
@@ -460,9 +460,9 @@ int main(void)
 
 							case NINE_DEGREES:
 								if (pwm_current_min < vpwm_ranges[NINE_DEGREES])
-									RELAY_ON;
+									RelayOn();
 								else
-									RELAY_OFF;
+									RelayOff();
 
 								if (pwm_current_min >= PWM_MIN_MAX)
 								{
@@ -472,9 +472,9 @@ int main(void)
 
 							case TWELVE_DEGREES:
 								if (pwm_current_min < vpwm_ranges[TWELVE_DEGREES])
-									RELAY_ON;
+									RelayOn();
 								else
-									RELAY_OFF;
+									RelayOff();
 
 								if (pwm_current_min >= PWM_MIN_MAX)
 								{
@@ -504,7 +504,7 @@ int main(void)
 				case GO_TO_STOP:
 					//tengo que apagar el rele durante 25 minutos
 					minutes = 0;
-					RELAY_OFF;
+					RelayOff();
 					stop_state = STOPPED;
 					break;
 
@@ -518,14 +518,14 @@ int main(void)
 
 				case TO_NEVER:
 					//apago el motor
-					RELAY_OFF;
+					RelayOff();
 					stop_state = NEVER;
 					break;
 
 				case NEVER:
 					//mantengo motor apagado mientras este en NEVER
 //					if (RELAY)
-//						RELAY_OFF;
+//						RelayOff();
 
 					if (Pote_Range != NEVER_DEGREES)
 					{
@@ -535,7 +535,7 @@ int main(void)
 					break;
 
 				case TO_ALWAYS:
-					RELAY_ON;
+					RelayOn();
 					stop_state = ALWAYS;
 					break;
 
@@ -545,8 +545,10 @@ int main(void)
 						stop_state = NORMAL;
 					}
 
+#ifdef RELAY_OFF_WITH_DOOR_OPEN
 					if (!RELAY)		//agregado pos si abren la puerta
-						RELAY_ON;
+						RelayOn();
+#endif
 
 					if (minutes >= 1415)
 						stop_state = GO_TO_STOP;
@@ -621,6 +623,9 @@ int main(void)
 #ifdef RELAY_OFF_WITH_DOOR_OPEN
 		}
 #endif
+		//Cuestiones generales
+		UpdateRelay();
+
 	}	//End of while (1)
 	return 0;
 }
@@ -837,6 +842,9 @@ void TimingDelay_Decrement(void)
 #endif
 		}
 	}
+
+	if (timer_relay)
+		timer_relay--;
 
 	if (led_timer)
 		led_timer--;
