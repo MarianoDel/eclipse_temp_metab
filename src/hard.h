@@ -12,6 +12,8 @@
 
 //--- Board Configuration ---------------------------------------//
 
+#define RELAY_OFF_WITH_DOOR_OPEN		//apaga el relay de temp cuando se abre la puerta
+										//tambien apaga el led indicador
 
 
 //--- End Board Configuration -----------------------------------//
