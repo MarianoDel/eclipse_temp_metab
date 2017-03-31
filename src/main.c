@@ -215,7 +215,7 @@ int main(void)
 	}
 
 	LED_ON;
-    Wait_ms(1000);
+    Wait_ms(4000);
     LED_OFF;
 
 	//--- Main loop ---//
@@ -546,7 +546,7 @@ int main(void)
 					}
 
 #ifdef RELAY_OFF_WITH_DOOR_OPEN
-					if (!RELAY)		//agregado pos si abren la puerta
+					if (!RelayIsOn())		//agregado pos si abren la puerta
 						RelayOn();
 #endif
 

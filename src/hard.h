@@ -40,8 +40,10 @@
 #define LED_OFF GPIOA->BSRR = 0x00100000
 
 //GPIOA pin5
-#define EDGE_PIN ((GPIOA->IDR & 0x0010) != 0)
+//GPIOA pin6
 
+//GPIOA pin7
+#define EDGE_PIN ((GPIOA->IDR & 0x0080) != 0)
 
 #define CH_IN_POTE ADC_Channel_5
 #define CH_IN_TEMP ADC_Channel_0
@@ -67,7 +69,7 @@
 
 //--- Temas con el sync de relay
 #define TT_DELAYED_OFF		0
-#define TT_DELAYED_ON		0
+#define TT_DELAYED_ON		4
 #define TT_RELAY			40		//timeout de espera antes de pegar o despegar el relay
 
 enum Relay_State {
@@ -85,6 +87,7 @@ enum Relay_State {
 void RelayOn (void);
 void RelayOff (void);
 void UpdateRelay (void);
+unsigned char RelayIsOn (void);
 
 
 #endif /* HARD_H_ */

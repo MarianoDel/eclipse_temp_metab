@@ -31,19 +31,30 @@ void RelayOff (void)
 	timer_relay = TT_RELAY;
 }
 
+//Revisa el estado del relay
+unsigned char RelayIsOn (void)
+{
+	if ((relay_state == ST_WAIT_ON) ||
+			(relay_state == ST_DELAYED_ON) ||
+			(relay_state == ST_ON))
+		return 1;
+	else
+		return 0;
+}
+
 //chequeo continuo del estado del relay
 void UpdateRelay (void)
 {
 	unsigned char edge = 0;
 
-	if ((!last_edge) && (EDGE_PIN))
-	{
-		edge = 1;
+	if ((!last_edge) && (EDGE_PIN))		//flanco ascendente detector
+	{									//senoidal arriba
+//		edge = 1;
 		last_edge = 1;
 	}
 
-	if ((last_edge) && (!EDGE_PIN))
-	{
+	if ((last_edge) && (!EDGE_PIN))		//flanco descendente detector
+	{									//senoidal abajo
 		edge = 1;
 		last_edge = 0;
 	}
