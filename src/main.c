@@ -21,6 +21,7 @@
 #include "adc.h"
 #include "core_cm0.h"
 #include "hard.h"
+#include "tim.h"
 
 //#define DOBLE_VECTOR_TEMP
 //#define SIMPLE_VECTOR_TEMP
@@ -38,11 +39,10 @@ volatile unsigned short timer_led_comm = 0;
 volatile unsigned char buffrx_ready = 0;
 volatile unsigned char *pbuffrx;
 volatile unsigned short timer_relay = 0;
+volatile unsigned short wait_ms_var;
 
 
 //--- VARIABLES GLOBALES ---//
-static __IO uint32_t TimingDelay;
-
 volatile unsigned char door_filter;
 volatile unsigned char take_sample_pote;
 volatile unsigned char take_sample_temp;
@@ -62,7 +62,7 @@ unsigned short ADC_Conf (void);
 unsigned short ReadADC1 (unsigned int);
 unsigned short ReadADC1_SameSampleTime (unsigned int);
 void SetADC1_SampleTime (void);
-void Delay(__IO uint32_t nTime);
+
 
 unsigned char Door_Open (void);
 unsigned short Get_Temp (void);
@@ -162,7 +162,8 @@ int main(void)
 	GPIO_Config();
 
 	//TIM Configuration.
-	Timer_1_Init();
+	TIM_3_Init();
+	TIM_16_Init();
 	//Timer_2_Init();
 	//Timer_3_Init();
 	//Timer_4_Init();
@@ -213,6 +214,8 @@ int main(void)
 			Wait_ms(150);
 		}
 	}
+
+	TIM16Enable ();
 
 	LED_ON;
     Wait_ms(4000);
@@ -734,17 +737,6 @@ unsigned short ReadADC1_SameSampleTime (unsigned int channel)
 	return (uint16_t) ADC1->DR;
 }
 
-/**
-  * @brief  Inserts a delay time.
-  * @param  nTime: specifies the delay time length, in milliseconds.
-  * @retval None
-  */
-void Delay(__IO uint32_t nTime)
-{
-  TimingDelay = nTime;
-
-  while(TimingDelay != 0);
-}
 
 unsigned short Get_Temp (void)
 {
@@ -801,10 +793,8 @@ volatile unsigned short relay_dumb = 0;
 
 void TimingDelay_Decrement(void)
 {
-	if (TimingDelay != 0x00)
-	{
-		TimingDelay--;
-	}
+	if (wait_ms_var)
+		wait_ms_var--;
 
 	//filtro de ruido para la puerta
 	if (DOOR)

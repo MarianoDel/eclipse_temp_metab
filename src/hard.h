@@ -68,9 +68,9 @@
 #define WAIT_NEW_CYCLE	3
 
 //--- Temas con el sync de relay
-#define TT_DELAYED_OFF		0
-#define TT_DELAYED_ON		4
-#define TT_RELAY			40		//timeout de espera antes de pegar o despegar el relay
+#define TT_DELAYED_OFF		5600
+#define TT_DELAYED_ON		6560
+#define TT_RELAY			60		//timeout de espera antes de pegar o despegar el relay
 
 enum Relay_State {
 

@@ -28,6 +28,10 @@
 #define RCC_TIM3_CLK_ON 	RCC->APB1ENR |= 0x00000002
 #define RCC_TIM3_CLK_OFF 	RCC->APB1ENR &= ~0x00000002
 
+#define RCC_TIM6_CLK 		(RCC->APB1ENR & 0x00000010)
+#define RCC_TIM6_CLK_ON 	RCC->APB1ENR |= 0x00000010
+#define RCC_TIM6_CLK_OFF 	RCC->APB1ENR &= ~0x00000010
+
 #define RCC_TIM14_CLK 		(RCC->APB1ENR & 0x00000100)
 #define RCC_TIM14_CLK_ON 	RCC->APB1ENR |= 0x00000100
 #define RCC_TIM14_CLK_OFF 	RCC->APB1ENR &= ~0x00000100
@@ -44,21 +48,33 @@
 #define RCC_TIM17_CLK_ON 	RCC->APB2ENR |= 0x00040000
 #define RCC_TIM17_CLK_OFF 	RCC->APB2ENR &= ~0x00040000
 
-#define Timer_1_Init() TIM_3_Init()
-#define Timer_2_Init() TIM_14_Init()
-#define Timer_3_Init() TIM_16_Init()
-#define Timer_4_Init() TIM_17_Init()
 
 //--- Exported functions ---//
+void TIM_1_Init (void);
 void TIM3_IRQHandler (void);
 void TIM_3_Init(void);
+void TIM_6_Init (void);
 void TIM14_IRQHandler (void);
 void TIM_14_Init(void);
 void TIM16_IRQHandler (void);
 void TIM_16_Init(void);
 void TIM17_IRQHandler (void);
 void TIM_17_Init(void);
+void Update_TIM3_CH1 (unsigned short);
+void Update_TIM3_CH2 (unsigned short);
+void Update_TIM3_CH3 (unsigned short);
+void Update_TIM3_CH4 (unsigned short);
+void Update_TIM3_Freq (unsigned short);
 void Wait_ms (unsigned short wait);
+
+void TIM6Enable (void);
+void TIM6Disable (void);
+
+void TIM16Enable (void);
+void TIM16Disable (void);
+
+#define Update_Buck(X) Update_TIM3_CH1(X)
+#define Update_Boost(X) Update_TIM3_CH2(X)
 #endif
 //--- End ---//
 

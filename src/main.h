@@ -40,7 +40,7 @@
 //#include "stm32f0xx_rtc.h"
 //#include "stm32f0xx_spi.h"
 //#include "stm32f0xx_syscfg.h"
-#include "stm32f0xx_tim.h"
+//#include "stm32f0xx_tim.h"
 #include "stm32f0xx_usart.h"
 //#include "stm32f0xx_wwdg.h"
 #include "system_stm32f0xx.h"
@@ -53,8 +53,8 @@
 
 //--- My includes ---//
 #include "stm32f0x_gpio.h"
-#include "stm32f0x_tim.h"
-#include "stm32f0x_uart.h"
+//#include "stm32f0x_tim.h"
+//#include "stm32f0x_uart.h"
 
 //--- Exported types ---//
 //--- Exported constants ---//

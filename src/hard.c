@@ -6,6 +6,7 @@
  */
 
 #include "hard.h"
+#include "tim.h"
 
 /* Externals variables ---------------------------------------------------------*/
 extern unsigned short timer_relay;
@@ -70,16 +71,18 @@ void UpdateRelay (void)
 			{
 				edge = 0;
 				relay_state = ST_DELAYED_ON;
-				timer_relay = TT_DELAYED_ON;
+				TIM16->CNT = 0;
 			}
 
 			if (!timer_relay)		//agoto el timer y no encontro sincro, pega igual
-				relay_state = ST_DELAYED_ON;
-
+			{
+				RELAY_ON;
+				relay_state = ST_ON;
+			}
 			break;
 
 		case ST_DELAYED_ON:
-			if (!timer_relay)
+			if (TIM16->CNT > TT_DELAYED_ON)
 			{
 				RELAY_ON;
 				relay_state = ST_ON;
@@ -95,16 +98,19 @@ void UpdateRelay (void)
 			{
 				edge = 0;
 				relay_state = ST_DELAYED_OFF;
-				timer_relay = TT_DELAYED_OFF;
+				TIM16->CNT = 0;
 			}
 
 			if (!timer_relay)		//agoto el timer y no encontro sincro, despega igual
-				relay_state = ST_DELAYED_OFF;
+			{
+				RELAY_OFF;
+				relay_state = ST_OFF;
+			}
 
 			break;
 
 		case ST_DELAYED_OFF:
-			if (!timer_relay)
+			if (TIM16->CNT > TT_DELAYED_OFF)
 			{
 				RELAY_OFF;
 				relay_state = ST_OFF;
