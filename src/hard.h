@@ -11,9 +11,36 @@
 #include "stm32f0xx_adc.h"
 
 //--- Board Configuration ---------------------------------------//
+//----------- Defines For Configuration -------------
+//----------- Hardware Board Version -------------
+//#define VER_1_0
+#define VER_2_0
+
+//-------- Type of Program ----------------
+//#define DOBLE_VECTOR_TEMP
+//#define SIMPLE_VECTOR_TEMP
+//#define SETPOINT_PLUS_HYST
+#define OPEN_LOOP
 
 #define RELAY_OFF_WITH_DOOR_OPEN		//apaga el relay de temp cuando se abre la puerta
 										//tambien apaga el led indicador
+
+//-------- Hardware resources for Type of Program ----------------
+#ifdef DOBLE_VECTOR_TEMP
+#define USE_DMX
+#endif
+
+#ifdef SIMPLE_VECTOR_TEMP
+#define USE_SUBSCRIBE
+#endif
+
+#ifdef SETPOINT_PLUS_HYST
+#define USE_DMX
+#endif
+
+#ifdef OPEN_LOOP
+//#define USE_DMX
+#endif
 
 
 //--- End Board Configuration -----------------------------------//
@@ -41,9 +68,15 @@
 
 //GPIOA pin5
 //GPIOA pin6
-
 //GPIOA pin7
-#define EDGE_PIN ((GPIOA->IDR & 0x0080) != 0)
+#define SYNC		((GPIOA->ODR & 0x0080) != 0)
+#define SYNC_ON		GPIOA->BSRR = 0x00000080
+#define SYNC_OFF	GPIOA->BSRR = 0x00800000
+
+//GPIOA pin9
+
+//GPIOA pin10
+#define EDGE_PIN ((GPIOA->IDR & 0x0400) != 0)
 
 #define CH_IN_POTE ADC_Channel_5
 #define CH_IN_TEMP ADC_Channel_0

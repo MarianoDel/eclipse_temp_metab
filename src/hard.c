@@ -52,12 +52,14 @@ void UpdateRelay (void)
 	{									//senoidal arriba
 //		edge = 1;
 		last_edge = 1;
+		SYNC_ON;
 	}
 
 	if ((last_edge) && (!EDGE_PIN))		//flanco descendente detector
 	{									//senoidal abajo
 		edge = 1;
 		last_edge = 0;
+		SYNC_OFF;
 	}
 
 	switch (relay_state)

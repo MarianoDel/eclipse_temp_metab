@@ -23,10 +23,6 @@
 #include "hard.h"
 #include "tim.h"
 
-//#define DOBLE_VECTOR_TEMP
-//#define SIMPLE_VECTOR_TEMP
-//#define SETPOINT_PLUS_HYST
-#define OPEN_LOOP
 
 #ifdef SETPOINT_PLUS_HYST
 #define HYST	7
@@ -218,8 +214,45 @@ int main(void)
 	TIM16Enable ();
 
 	LED_ON;
-    Wait_ms(4000);
+    Wait_ms(1000);
     LED_OFF;
+
+    //3 segundos muestro sincro
+    timer_standby = 3000;
+    while (timer_standby)
+    {
+//    	if (EDGE_PIN)
+//    		LED_ON;
+//    	else
+//    		LED_OFF;
+
+    	if ((!temp_filtered) && (EDGE_PIN))		//flanco ascendente detector
+    	{									//senoidal arriba
+    		temp_filtered = 1;
+    		SYNC_ON;
+    	}
+
+    	if ((temp_filtered) && (!EDGE_PIN))		//flanco descendente detector
+    	{									//senoidal abajo
+    		temp_filtered = 0;
+    		SYNC_OFF;
+    		if (LED)
+    			LED_OFF;
+    		else
+    			LED_ON;
+    	}
+    }
+    LED_OFF;
+
+//    while (1)
+//    {
+//    	if (SYNC)
+//    		SYNC_OFF;
+//    	else
+//    		SYNC_ON;
+//
+//    	Wait_ms (10);
+//    }
 
 	//--- Main loop ---//
 	while(1)

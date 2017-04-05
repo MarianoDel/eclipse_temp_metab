@@ -66,8 +66,8 @@ void GPIO_Config (void)
 		GPIOA_CLK_ON;
 
 	temp = GPIOA->MODER;	//2 bits por pin
-	temp &= 0xFFFF3000;		//salidas PA2 PA3 PA4 entradas PA0 (analog) PA1 PA5 (analog)
-	temp |= 0x00000D53;		//PA1 PA7 in digital
+	temp &= 0xFFCF3000;		//salidas PA2 PA3 PA4 entradas PA0 (analog) PA1 PA5 (analog) PA7 output
+	temp |= 0x00004D53;		//PA1 PA10 in digital
 	GPIOA->MODER = temp;
 
 	temp = GPIOA->OTYPER;	//1 bit por pin
