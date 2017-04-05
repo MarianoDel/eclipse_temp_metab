@@ -30,8 +30,8 @@
 
 //--- VARIABLES EXTERNAS ---//
 volatile unsigned char timer_1seg = 0;
-volatile unsigned short timer_standby = 0;
-volatile unsigned short timer_led_comm = 0;
+//volatile unsigned short timer_standby = 0;
+//volatile unsigned short timer_led_comm = 0;
 volatile unsigned char buffrx_ready = 0;
 volatile unsigned char *pbuffrx;
 volatile unsigned short timer_relay = 0;
@@ -218,8 +218,8 @@ int main(void)
     LED_OFF;
 
     //3 segundos muestro sincro
-    timer_standby = 3000;
-    while (timer_standby)
+    timer_relay = 3000;
+    while (timer_relay)
     {
 //    	if (EDGE_PIN)
 //    		LED_ON;
