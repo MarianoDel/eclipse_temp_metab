@@ -22,7 +22,7 @@
 //#define SETPOINT_PLUS_HYST
 #define OPEN_LOOP
 
-#define RELAY_OFF_WITH_DOOR_OPEN		//apaga el relay de temp cuando se abre la puerta
+//#define RELAY_OFF_WITH_DOOR_OPEN		//apaga el relay de temp cuando se abre la puerta
 										//tambien apaga el led indicador
 
 //-------- Hardware resources for Type of Program ----------------
@@ -69,6 +69,8 @@
 //GPIOA pin5
 //GPIOA pin6
 //GPIOA pin7
+
+#ifdef VER_2_0
 #define SYNC		((GPIOA->ODR & 0x0080) != 0)
 #define SYNC_ON		GPIOA->BSRR = 0x00000080
 #define SYNC_OFF	GPIOA->BSRR = 0x00800000
@@ -77,6 +79,7 @@
 
 //GPIOA pin10
 #define EDGE_PIN ((GPIOA->IDR & 0x0400) != 0)
+#endif
 
 #define CH_IN_POTE ADC_Channel_5
 #define CH_IN_TEMP ADC_Channel_0
@@ -104,6 +107,8 @@
 #define TT_DELAYED_OFF		5600
 #define TT_DELAYED_ON		6560
 #define TT_RELAY			60		//timeout de espera antes de pegar o despegar el relay
+#define TT_MINUTES_DAY_ON	1415
+#define TT_MINUTES_DAY_OFF	25
 
 enum Relay_State {
 
@@ -121,6 +126,7 @@ void RelayOn (void);
 void RelayOff (void);
 void UpdateRelay (void);
 unsigned char RelayIsOn (void);
+unsigned char RelayIsOff (void);
 
 
 #endif /* HARD_H_ */

@@ -217,6 +217,7 @@ int main(void)
     Wait_ms(1000);
     LED_OFF;
 
+#ifdef VER_2_0
     //3 segundos muestro sincro
     timer_relay = 3000;
     while (timer_relay)
@@ -243,6 +244,7 @@ int main(void)
     	}
     }
     LED_OFF;
+#endif
 
 //    while (1)
 //    {
@@ -524,7 +526,7 @@ int main(void)
 	#endif //OPEN_LOOP
 					}	//end move_relay
 
-					if (minutes >= 1415)
+					if (minutes >= TT_MINUTES_DAY_ON)
 						stop_state = GO_TO_STOP;
 
 					//si se apago la heladera
@@ -545,10 +547,11 @@ int main(void)
 					break;
 
 				case STOPPED:
-					if (minutes >= 25)
+					if (minutes >= TT_MINUTES_DAY_OFF)
 					{
 						stop_state = NORMAL;
 						minutes = 0;
+						pwm_current_min = 0;
 					}
 					break;
 
@@ -567,6 +570,7 @@ int main(void)
 					{
 						minutes = 0;
 						stop_state = NORMAL;
+						pwm_current_min = 0;
 					}
 					break;
 
@@ -586,7 +590,7 @@ int main(void)
 						RelayOn();
 #endif
 
-					if (minutes >= 1415)
+					if (minutes >= TT_MINUTES_DAY_ON)
 						stop_state = GO_TO_STOP;
 
 					break;
@@ -660,7 +664,9 @@ int main(void)
 		}
 #endif
 		//Cuestiones generales
+#ifdef VER_2_0
 		UpdateRelay();
+#endif
 
 	}	//End of while (1)
 	return 0;
