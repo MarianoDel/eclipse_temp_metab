@@ -217,6 +217,21 @@ int main(void)
     Wait_ms(1000);
     LED_OFF;
 
+//    //para pruebas
+//    Wait_ms(9000);
+//    while (1)
+//    {
+//    	if (!timer_relay)
+//    	{
+//    		if (RELAY)
+//    			RELAY_OFF;
+//    		else
+//    			RELAY_ON;
+//
+//    		timer_relay = 10000;
+//    	}
+//    }
+//    //para pruebas
 #ifdef VER_2_0
     //3 segundos muestro sincro
     timer_relay = 3000;
@@ -364,6 +379,16 @@ int main(void)
 		{
 			LIGHT_OFF;
 			door_is_open = 0;
+		}
+#else
+		if (Door_Open())
+		{
+			//LED_OFF;
+			LIGHT_ON;
+		}
+		else
+		{
+			LIGHT_OFF;
 		}
 #endif
 
