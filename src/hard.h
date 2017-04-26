@@ -17,13 +17,16 @@
 #define VER_2_0
 
 //-------- Type of Program ----------------
+#define RELAY_OFF_WITH_DOOR_OPEN		//apaga el relay de temp cuando se abre la puerta
+										//tambien apaga el led indicador
+//#define RELAY_ALWAYS_ON		//apaga el relay solo por temperatura
+
+//-------- Type of Temparature determination ----------------
 //#define DOBLE_VECTOR_TEMP
 //#define SIMPLE_VECTOR_TEMP
 //#define SETPOINT_PLUS_HYST
 #define OPEN_LOOP
 
-//#define RELAY_OFF_WITH_DOOR_OPEN		//apaga el relay de temp cuando se abre la puerta
-										//tambien apaga el led indicador
 
 //-------- Hardware resources for Type of Program ----------------
 #ifdef DOBLE_VECTOR_TEMP
